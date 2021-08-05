@@ -1,0 +1,86 @@
+/********************************************{[ ~~~~~~~~~~~~~~~line following robot by anand (10/31/2014) ~~~~~~~~~~~~~~~~~~~~~]}**************************************************************/
+int leftInput=A1;/*defining pins of ir sensor*/
+int midInput=A2;/*defining pins of ir sensor*/
+int rightInput=A3;/*defining pins of ir sensor*/
+int left_motorpin1 = 10;/*defining pins of motor*/
+int left_motorpin2 = 11;/*defining pins of motor*/
+int right_motorpin3 =6;/*defining pins of motor*/
+int right_motorpin4 = 7;/*defining pins of motor*/
+int leftValue = 0;/*initialising value of ir sensor*/
+int rightValue = 0;/*initialising value of ir sensor*/
+int midValue = 0;/*initialising value of ir sensor*/
+int distance;
+/*******************************************{[ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ultrasonic part~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]}**************************************************************/
+#include <NewPing.h>// ultra sonic part
+
+#define TRIGGER_PIN  12  // Arduino pin tied to trigger pin on ping sensor.
+#define ECHO_PIN     13// Arduino pin tied to echo pin on ping sensor.
+#define MAX_DISTANCE 400 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
+
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
+
+unsigned int pingSpeed = 50; // How frequently are we going to send out a ping (in milliseconds). 50ms would be 20 times a second.
+unsigned long pingTimer;     // Holds the next ping time.
+
+
+/******************************************{[ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ setting pins~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]}**************************************************************/
+void setup()
+{
+  Serial.begin(9600);
+pinMode(left_motorpin1, OUTPUT);
+pinMode(left_motorpin2, OUTPUT);
+pinMode(right_motorpin3, OUTPUT);
+pinMode(right_motorpin4, OUTPUT);
+}
+/*******************************************{[ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~loop~~~~~~~~~~~~~~~~~~~]}**************************************************************/
+void loop()
+{
+/*  midValue= analogRead (midInput);      //reading value
+  Serial.print(midValue);                       //communicating with virtual terminal
+  Serial.println(" ");                         //communicating with virtual terminal
+  delay(50);                      // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
+  */unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
+  Serial.print("Ping: ");
+  Serial.print(uS / US_ROUNDTRIP_CM); // Convert ping time to distance in cm and print result (0 = outside set distance range)
+  Serial.println("cm");
+  distance=(uS / US_ROUNDTRIP_CM);
+ 
+     if(distance<21)/*take right*/
+     {
+     digitalWrite (left_motorpin1, LOW);
+     digitalWrite (left_motorpin2, HIGH);
+     digitalWrite (right_motorpin3, HIGH);
+     digitalWrite (right_motorpin4, LOW);
+     }
+     else /* forward*/
+     {
+       digitalWrite (left_motorpin1, HIGH);
+       digitalWrite (left_motorpin2, LOW);
+       digitalWrite (right_motorpin3, HIGH);
+       digitalWrite (right_motorpin4, LOW);
+     }
+    /* else if (midValue>540)//take left
+    {
+    digitalWrite (left_motorpin1, HIGH);
+    digitalWrite (left_motorpin2, LOW);
+    digitalWrite (right_motorpin3, LOW);
+    digitalWrite (right_motorpin4, HIGH);
+    }*/
+    //else if (leftValue > 945 && rightValue > 945)/*stop*/
+    /*{
+    digitalWrite (left_motorpin1, LOW);
+    digitalWrite (left_motorpin2, LOW);
+    digitalWrite (right_motorpin3, LOW);
+    digitalWrite (right_motorpin4, LOW);
+    }
+   else if (leftValue < 945 && midValue < 945 && rightValue < 945 )//REVERSE
+    {   
+    digitalWrite (left_motorpin1, LOW);
+    digitalWrite (left_motorpin2, HIGH);
+    digitalWrite (right_motorpin3, LOW);
+    digitalWrite (right_motorpin4, HIGH);
+    }
+    */
+      
+}
+/***************************************************************{[END OF PROGRAM]}*****************************************************************************************/
